@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ken and Babyz Creche | Where Little Ones Thrive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 50%, #F6D365 100%);
+        }
+        
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.5;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .bounce-slow {
+            animation: bounce 3s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .section-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Lightbox Styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        
+        .lightbox-img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .lightbox-img {
+            max-width: 90vw;
+             max-height: 90vh;
+            width: auto;
+            height: auto;
+            object-fit: contain; /* This is key - maintains aspect ratio */
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.3s ease;
+        }
+ 
+ 
+
+        /* For mobile devices */
+        @media (max-width: 768px) {
+            .lightbox-img {
+            max-width: 95vw;
+            max-height: 85vh;
+            }
+        }
+
+        /* For very tall images */
+        .lightbox-img.portrait {
+            max-width: 70vw;
+            max-height: 90vh;
+        }
+
+        /* Loading state */
+        .lightbox-img.loading {
+            opacity: 0.5;
+        }
+
+        /* Prevent image dragging */
+        .lightbox-img {
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            background: white;
+            color: black;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .lightbox-close:hover {
+            background: #f472b6;
+            color: white;
+        }
+        
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            transform: translateY(-50%);
+        }
+        
+        .lightbox-nav button {
+            background: white;
+            color: black;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            opacity: 0.7;
+        }
+        
+        .lightbox-nav button:hover {
+            opacity: 1;
+            background: #f472b6;
+            color: white;
+        }
+        
+        .lightbox-caption {
+            color: white;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            padding: 0 20px;
+        }
+        
+        /* Hover Preview Overlay */
+        .gallery-item {
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            border-radius: 1rem;
+        }
+        
+        .gallery-item img {
+            transition: transform 0.4s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .gallery-item .preview-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 1rem;
+        }
+        
+        .gallery-item:hover .preview-overlay {
+            opacity: 1;
+        }
+        
+        .preview-text {
+            color: white;
+            font-weight: bold;
+            background: rgba(236, 72, 153, 0.9);
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-size: 14px;
+        }
+        
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .lightbox-content {
+                max-width: 95%;
+            }
+            
+            .lightbox-nav button {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            
+            .lightbox-close {
+                top: -40px;
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+    <!-- Decorative Blobs -->
+    <div class="blob w-64 h-64 bg-pink-300 rounded-full -top-20 -left-20"></div>
+    <div class="blob w-96 h-96 bg-yellow-200 rounded-full top-40 -right-40 animation-delay-2000"></div>
+    <div class="blob w-80 h-80 bg-blue-200 rounded-full bottom-20 left-20 animation-delay-4000"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-2xl flex items-center justify-center">
+                        <i data-lucide="heart" class="w-7 h-7 text-white"></i>
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
+                        Ken & Babyz
+                    </span>
+                </div>
+                
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#home" class="text-gray-700 hover:text-pink-500 font-semibold transition-colors">Home</a>
+                    <a href="#about" class="text-gray-700 hover:text-pink-500 font-semibold transition-colors">About</a>
+                    <a href="#programs" class="text-gray-700 hover:text-pink-500 font-semibold transition-colors">Programs</a>
+                    <a href="#ceo" class="text-gray-700 hover:text-pink-500 font-semibold transition-colors">Our CEO</a>
+                    <a href="#gallery" class="text-gray-700 hover:text-pink-500 font-semibold transition-colors">Gallery</a>
+                    <a href="#contact" class="px-6 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold rounded-full hover:shadow-lg transition-all transform hover:scale-105">
+                        Enroll Now
+                    </a>
+                </div>
+                
+                <button id="mobile-menu-btn" class="md:hidden p-2">
+                    <i data-lucide="menu" class="w-8 h-8 text-gray-700"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <div class="px-4 py-4 space-y-3">
+                <a href="#home" class="block py-2 text-gray-700 font-semibold">Home</a>
+                <a href="#about" class="block py-2 text-gray-700 font-semibold">About</a>
+                <a href="#programs" class="block py-2 text-gray-700 font-semibold">Programs</a>
+                <a href="#ceo" class="block py-2 text-gray-700 font-semibold">Our CEO</a>
+                <a href="#gallery" class="block py-2 text-gray-700 font-semibold">Gallery</a>
+                <a href="#contact" class="block py-2 text-pink-500 font-semibold">Enroll Now</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center pt-20">
+        <div class="absolute inset-0 gradient-bg opacity-10"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/80 rounded-full shadow-sm">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-yellow-500"></i>
+                        <span class="text-sm font-semibold text-gray-700">Trusted by 500+ Families</span>
+                    </div>
+                    
+                    <h1 class="text-5xl lg:text-6xl font-extrabold leading-tight">
+                        <span class="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
+                            Where Little Ones
+                        </span>
+                        <br>
+                        <span class="text-gray-800">Learn, Play & Grow!</span>
+                    </h1>
+                    
+                    <p class="text-xl text-gray-600 leading-relaxed max-w-lg">
+                        Welcome to Ken and Babyz Creche! We provide a safe, nurturing, and stimulating environment where your children can thrive and reach their full potential.
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#contact" class="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex items-center gap-2">
+                            <i data-lucide="calendar-check" class="w-5 h-5"></i>
+                            Schedule an Enquiry
+                        </a>
+                        <a href="#programs" class="px-8 py-4 bg-white text-gray-700 font-bold rounded-full shadow-lg hover:shadow-xl transition-all transition-all transform hover:scale-105 flex items-center gap-2 border-2 border-gray-100">
+                            <i data-lucide="play-circle" class="w-5 h-5 text-purple-500"></i>
+                            View Programs
+                        </a>
+                    </div>
+                    
+                    <div class="flex items-center gap-8 pt-4">
+                        <div class="flex -space-x-4">
+                            <div class="w-12 h-12 rounded-full border-4 border-white shadow-lg bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-white font-bold">
+                                1
+                            </div>
+                            <div class="w-12 h-12 rounded-full border-4 border-white shadow-lg bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center text-white font-bold">
+                                2
+                            </div>
+                            <div class="w-12 h-12 rounded-full border-4 border-white shadow-lg bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-white font-bold">
+                                3
+                            </div>
+                            <div class="w-12 h-12 rounded-full border-4 border-white shadow-lg bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
+                                +500
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-1">
+                                <i data-lucide="star" class="w-5 h-5 text-yellow-400 fill-yellow-400"></i>
+                                <i data-lucide="star" class="w-5 h-5 text-yellow-400 fill-yellow-400"></i>
+                                <i data-lucide="star" class="w-5 h-5 text-yellow-400 fill-yellow-400"></i>
+                                <i data-lucide="star" class="w-5 h-5 text-yellow-400 fill-yellow-400"></i>
+                                <i data-lucide="star" class="w-5 h-5 text-yellow-400 fill-yellow-400"></i>
+                            </div>
+                            <p class="text-sm text-gray-600 font-semibold">5.0 Rating</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <div class="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3 bounce-slow">
+                        <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center">
+                            <i data-lucide="shield-check" class="w-7 h-7 text-green-500"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-gray-800">100% Safe</p>
+                            <p class="text-xs text-gray-500">Environment</p>
+                        </div>
+                    </div>
+                    <div class="absolute -top-4 -right-4 bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3 bounce-slow">
+                        <div class="w-14 h-14 bg-yellow-100 rounded-xl flex items-center justify-center">
+                            <i data-lucide="award" class="w-7 h-7 text-yellow-500"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-gray-800">Number one choice</p>
+                            <p class="text-xs text-gray-500">Best we have to offer</p>
+                        </div>
+                    </div>
+                    <div class="rounded-3xl shadow-2xl overflow-hidden">
+                        <img src="assets/2.jpeg" alt="Happy children playing" 
+                            class="w-full object-cover h-[500px]">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="text-4xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">25+</div>
+                    <div class="text-gray-600 font-semibold">Years Experience</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold bg-gradient-to-r from-purple-500 to-indigo-500 bg-clip-text text-transparent">500+</div>
+                    <div class="text-gray-600 font-semibold">Happy Families</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">100%</div>
+                    <div class="text-gray-600 font-semibold">Parent Satisfaction</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold bg-gradient-to-r from-green-500 to-teal-500 bg-clip-text text-transparent">24/7</div>
+                    <div class="text-gray-600 font-semibold">Secure Environment</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 section-pattern bg-gradient-to-br from-pink-50 via-white to-purple-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="text-sm font-bold text-pink-500 uppercase tracking-wider">About Us</span>
+                <h2 class="text-4xl lg:text-5xl font-bold text-gray-800 mt-2">Why Parents Love Ken & Babyz</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
+                    We're dedicated to providing the best early childhood education and care for your little ones.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-3xl p-8 shadow-lg card-hover transition-all duration-300">
+                    <div class="w-16 h-16 bg-pink-100 rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="home" class="w-8 h-8 text-pink-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Home Away From Home</h3>
+                    <p class="text-gray-600">Our warm and inviting spaces make your child feel safe, comfortable, and at ease from the moment they arrive.</p>
+                </div>
+                
+                <div class="bg-white rounded-3xl p-8 shadow-lg card-hover transition-all duration-300">
+                    <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="book-open" class="w-8 h-8 text-purple-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Play-Based Learning</h3>
+                    <p class="text-gray-600">We blend education with fun activities that spark curiosity and foster a lifelong love for learning.</p>
+                </div>
+                
+                <div class="bg-white rounded-3xl p-8 shadow-lg card-hover transition-all duration-300">
+                    <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="users" class="w-8 h-8 text-blue-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Spacious Play Areas</h3>
+                    <p class="text-gray-600">Our thoughtfully designed play areas are spacious, safe, and equipped with age-appropriate toys and equipment.</p>
+                </div>
+                
+                <div class="bg-white rounded-3xl p-8 shadow-lg card-hover transition-all duration-300">
+                    <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="utensils" class="w-8 h-8 text-green-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Healthy Meals</h3>
+                    <p class="text-gray-600">Nutritious, home-cooked meals prepared fresh daily with organic ingredients and dietary accommodations.</p>
+                </div>
+                
+                <div class="bg-white rounded-3xl p-8 shadow-lg card-hover transition-all duration-300">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="brush" class="w-8 h-8 text-yellow-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Creative Arts</h3>
+                    <p class="text-gray-600">Encouraging creativity through painting, drawing, dancing, music to help children express themselves and develop fine motor skills.</p>
+                </div>
+                
+                <div class="bg-white rounded-3xl p-8 shadow-lg card-hover transition-all duration-300">
+                    <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="external-link" class="w-8 h-8 text-red-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">After School Care</h3>
+                    <p class="text-gray-600">Extended care hours to support working parents with supervised play, homework help, and structured activities.</p>
+                </div>
+
+                <div class="bg-white rounded-3xl p-8 shadow-lg card-hover transition-all duration-300">
+                    <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="moon" class="w-8 h-8 text-blue-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Sleepovers</h3>
+                    <p class="text-gray-600">Organized sleepovers for children of all ages to aid Travelling and working parents</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Programs Section -->
+    <section id="programs" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="text-sm font-bold text-pink-500 uppercase tracking-wider">Our Programs</span>
+                <h2 class="text-4xl lg:text-5xl font-bold text-gray-800 mt-2">Tailored for Every Age</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
+                    Age-appropriate programs designed to meet the developmental needs of your child at every stage.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Infant Program -->
+                <div class="bg-gradient-to-br from-pink-50 to-rose-50 rounded-3xl overflow-hidden shadow-lg card-hover transition-all duration-300">
+                    <div class="h-48 bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center">
+                        <i data-lucide="baby" class="w-24 h-24 text-white"></i>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Infant Care</h3>
+                        <p class="text-3xl font-bold text-pink-500 mb-4">0 - 18 months</p>
+                        <p class="text-gray-600 mb-6">Gentle care with sensory activities, tummy time, and nurturing support for your newest family member.</p>
+                        <ul class="space-y-3 mb-6">
+                            <li class="flex items-center gap-2 text-gray-700">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                                Individualized feeding schedules
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-700">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                                Sensory exploration activities
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-700">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                                Secure sleep areas
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-700">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                                Daily updates & photos
+                            </li>
+                        </ul>
+                        <a href="#contact" class="block w-full py-3 bg-pink-500 text-white text-center font-bold rounded-xl hover:bg-pink-600 transition-colors">
+                            Enroll Now
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Toddler Program -->
+                <div class="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-3xl overflow-hidden shadow-lg card-hover transition-all duration-300 relative">
+                    <div class="absolute top-4 right-4">
+                        <span class="px-3 py-1 bg-yellow-400 text-yellow-900 text-xs font-bold rounded-full">Most Popular</span>
+                    </div>
+                    <div class="h-48 bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center">
+                        <i data-lucide="user" class="w-24 h-24 text-white"></i>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Toddler Time</h3>
+                        <p class="text-3xl font-bold text-purple-500 mb-4">18 - 36 months</p>
+                        <p class="text-gray-600 mb-6">Active learning through play, language development, and social interaction with peers.</p>
+                        <ul class="space-y-3 mb-6">
+                            <li class="flex items-center gap-2 text-gray-700">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                                Language & literacy focus
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-700">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                                Gross motor activities
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-700">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                                Potty training support
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-700">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                                Creative arts & crafts
+                            </li>
+                        </ul>
+                        <a href="#contact" class="block w-full py-3 bg-purple-500 text-white text-center font-bold rounded-xl hover:bg-purple-600 transition-colors">
+                            Enroll Now
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Pre-K Program -->
+                <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl overflow-hidden shadow-lg card-hover transition-all duration-300">
+                    <div class="h-48 bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                        <i data-lucide="school" class="w-24 h-24 text-white"></i>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Pre-K Prep</h3>
+                        <p class="text-3xl font-bold text-blue-500 mb-4">3 - 5 years</p>
+                        <p class="text-gray-600 mb-6">School readiness program with focus on academic skills, social-emotional development, and independence.</p>
+                        <ul class="space-y-3 mb-6">
+                            <li class="flex items-center gap-2 text-gray-700">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                                Pre-reading & math skills
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-700">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                                STEM exploration
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-700">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                                Social skills building
+                            </li>
+                            <li class="flex items-center gap-2 text-gray-700">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                                Science experiments
+                            </li>
+                        </ul>
+                        <a href="#contact" class="block w-full py-3 bg-blue-500 text-white text-center font-bold rounded-xl hover:bg-blue-600 transition-colors">
+                            Enroll Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CEO Section -->
+    <section id="ceo" class="py-24 section-pattern bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="text-sm font-bold text-pink-300 uppercase tracking-wider">Meet Our Leader</span>
+                <h2 class="text-4xl lg:text-5xl font-bold text-white mt-2">A Message from Our CEO</h2>
+            </div>
+            
+            <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 lg:p-12">
+                <div class="grid lg:grid-cols-3 gap-12 items-center">
+                    <div class="lg:col-span-1">
+                        <div class="relative">
+                            <div class="w-64 h-64 mx-auto rounded-full overflow-hidden border-4 border-white/30 shadow-2xl">
+                                <img src="assets/1.jpeg" alt="CEO Portrait" class="w-full h-full object-cover">
+                            </div>
+                            <div class="absolute bottom-0 right-4 bg-white rounded-full p-4 shadow-xl">
+                                <i data-lucide="crown" class="w-8 h-8 text-yellow-500"></i>
+                            </div>
+                        </div>
+                        <div class="text-center mt-6">
+                            <h3 class="text-2xl font-bold text-white">Kehinde Oladipo</h3>
+                            <p class="text-pink-300 font-semibold">Founder & CEO</p>
+                            <div class="flex justify-center gap-4 mt-4">
+                                <a href="https://www.linkedin.com/in/oladipo-kehinde-a1280a103/" class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors">
+                                    <i data-lucide="linkedin" class="w-5 h-5"></i>
+                                </a>
+                                <a href="https://web.facebook.com/kehinde.tairu" class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors">
+                                    <i data-lucide="facebook" class="w-5 h-5"></i>
+                                </a>
+                                <a href="mailto:kennygcreche@gmail.com" class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors">
+                                    <i data-lucide="mail" class="w-5 h-5"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="lg:col-span-2">
+                        <div class="flex items-start gap-4 mb-6">
+                            <i data-lucide="quote" class="w-12 h-12 text-pink-300 opacity-50"></i>
+                        </div>
+                        <p class="text-xl text-white leading-relaxed mb-6">
+                            "Every child deserves a nurturing environment where they can explore, learn, and grow. When I founded Ken and Babyz Creche, my vision was simple: create a place that feels like an extension of home, where children are loved, respected, and empowered to become the best versions of themselves."
+                        </p>
+                        <p class="text-lg text-white/80 leading-relaxed mb-6">
+                            With over 15 years of experience in early childhood education and child psychology, I've dedicated my life to understanding how young minds develop and thrive. As a mother of four myself, I know firsthand the joys and challenges of parenting, and I bring that empathy and insight into everything we do at Ken and Babyz.
+                        </p>
+                        <p class="text-lg text-white/80 leading-relaxed mb-8">
+                            I believe that the early years of a child's life are the foundation for all future learning. That's why we provide individualized attention, stimulating activities, and a curriculum designed to nurture every aspect of your child's development – cognitive, social, emotional, and physical.
+                        </p>
+                        
+                        <div class="grid grid-cols-3 gap-6 border-t border-white/20 pt-8">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-pink-300">25+</div>
+                                <div class="text-sm text-white/70">Years Experience</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-pink-300">500+</div>
+                                <div class="text-sm text-white/70">Families Served</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-pink-300">12</div>
+                                <div class="text-sm text-white/70">Early Ed Certifications</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8 flex flex-wrap gap-4">
+                            <div class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full">
+                                <i data-lucide="award" class="w-5 h-5 text-yellow-400"></i>
+                                <span class="text-white text-sm">Early Childhood Education Certified</span>
+                            </div>
+                            <div class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full">
+                                <i data-lucide="graduation-cap" class="w-5 h-5 text-blue-400"></i>
+                                <span class="text-white text-sm">Bsc.Ed. in Economics</span>
+                            </div>
+                            <div class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full">
+                                <i data-lucide="cross" class="w-5 h-5 text-green-400"></i>
+                                <span class="text-white text-sm">First Aid & CPR Certified</span>
+                            </div>
+                            <div class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full">
+                                <i data-lucide="heart" class="w-5 h-5 text-red-400"></i>
+                                <span class="text-white text-sm">Mother of Four</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section with Lightbox -->
+    <section id="gallery" class="py-24 bg-gradient-to-br from-pink-50 via-white to-purple-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="text-sm font-bold text-pink-500 uppercase tracking-wider">Our Gallery</span>
+                <h2 class="text-4xl lg:text-5xl font-bold text-gray-800 mt-2">Capturing Precious Moments</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
+                    A glimpse into the joyful learning environment at Ken and Babyz Creche.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Column 1 -->
+                <div class="space-y-4">
+                    <div class="gallery-item">
+                        <img src="assets/3.jpeg" 
+                             class="rounded-2xl shadow-lg w-full h-40 object-cover"
+                             data-caption="">
+                        <div class="preview-overlay">
+                            <span class="preview-text">Click to view</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="assets/4.jpeg" 
+                             class="rounded-2xl shadow-lg w-full h-60 object-cover"
+                             data-caption="">
+                        <div class="preview-overlay">
+                            <span class="preview-text">Click to view</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Column 2 -->
+                <div class="space-y-4">
+                    <div class="gallery-item">
+                        <img src="assets/5.jpeg" 
+                             class="rounded-2xl shadow-lg w-full h-60 object-cover"
+                             data-caption="">
+                        <div class="preview-overlay">
+                            <span class="preview-text">Click to view</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="assets/6.jpeg" 
+                             class="rounded-2xl shadow-lg w-full h-40 object-cover"
+                             data-caption="">
+                        <div class="preview-overlay">
+                            <span class="preview-text">Click to view</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Column 3 -->
+                <div class="space-y-4">
+                    <div class="gallery-item">
+                        <img src="assets/7.jpeg" 
+                             class="rounded-2xl shadow-lg w-full h-40 object-cover"
+                             data-caption="">
+                        <div class="preview-overlay">
+                            <span class="preview-text">Click to view</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="assets/8.jpeg" 
+                             class="rounded-2xl shadow-lg w-full h-60 object-cover"
+                             data-caption="">
+                        <div class="preview-overlay">
+                            <span class="preview-text">Click to view</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Column 4 -->
+                <div class="space-y-4">
+                    <div class="gallery-item">
+                        <img src="assets/9.jpeg" 
+                             class="rounded-2xl shadow-lg w-full h-60 object-cover"
+                             data-caption="">
+                        <div class="preview-overlay">
+                            <span class="preview-text">Click to view</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="assets/10.jpeg"  
+                             class="rounded-2xl shadow-lg w-full h-40 object-cover"
+                             data-caption="">
+                        <div class="preview-overlay">
+                            <span class="preview-text">Click to view</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lightbox Modal -->
+            <div id="lightbox" class="lightbox">
+                <button id="lightbox-close" class="lightbox-close">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+                <div class="lightbox-nav">
+                    <button id="lightbox-prev">
+                        <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                    </button>
+                    <button id="lightbox-next">
+                        <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                <div class="lightbox-content">
+                    <img id="lightbox-img" src="" alt="" class="lightbox-img">
+                    <div id="lightbox-caption" class="lightbox-caption"></div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-10">
+                <a href="https://www.instagram.com/kennbabyz_creche/" target="_blank" class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+                    <i data-lucide="instagram" class="w-5 h-5"></i>
+                    Follow Us on Instagram
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="text-sm font-bold text-pink-500 uppercase tracking-wider">Testimonials</span>
+                <h2 class="text-4xl lg:text-5xl font-bold text-gray-800 mt-2">What Parents Say</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gradient-to-br from-pink-50 to-rose-50 rounded-3xl p-8 relative">
+                    <i data-lucide="quote" class="w-10 h-10 text-pink-300 mb-4"></i>
+                    <p class="text-gray-600 mb-6 italic">"Ken and Babyz Creche has been a blessing for our family. The staff truly cares about each child, and my daughter can't stop talking about her teachers!"</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-white font-bold">
+                            FB
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-800">Femi Balogun</p>
+                            <p class="text-sm text-gray-500">Mom of Munize, 5</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1 mt-4">
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-3xl p-8 relative">
+                    <i data-lucide="quote" class="w-10 h-10 text-purple-300 mb-4"></i>
+                    <p class="text-gray-600 mb-6 italic">"The best decision we made was enrolling our son here. His social skills and confidence have grown tremendously. The daily updates give us peace of mind."</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center text-white font-bold">
+                            OA
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-800">Olawunmi Adenaike</p>
+                            <p class="text-sm text-gray-500">Mom of Semilore & Semilogo, 5 & 4</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1 mt-4">
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 relative">
+                    <i data-lucide="quote" class="w-10 h-10 text-blue-300 mb-4"></i>
+                    <p class="text-gray-600 mb-6 italic">"As a first-time parent, finding the right creche was daunting. Ken and Babyz made us feel welcome from day one. Our twins are thriving here!"</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-white font-bold">
+                            MA
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-800">Mrs Adenikinju</p>
+                            <p class="text-sm text-gray-500">Mom of Taiwo & Kehinde, 5</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1 mt-4">
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 gradient-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+                <div class="grid lg:grid-cols-2">
+                    <div class="p-8 lg:p-12">
+                        <span class="text-sm font-bold text-pink-500 uppercase tracking-wider">Get In Touch</span>
+                        <h2 class="text-4xl font-bold text-gray-800 mt-2 mb-6">Schedule an Enquiry Today</h2>
+                        <p class="text-gray-600 mb-8">We invite you to visit our creche and see the magic of Ken and Babyz for yourself!</p>
+                    
+                        <!-- FORM START - Updated with action, method, and hidden fields -->
+                        <form id="contact-form" action="https://formspree.io/f/mqedalvr" method="POST" class="space-y-6">
+                            <!-- Hidden Fields for Formspree -->
+                            <input type="hidden" name="_subject" value="New Website Enquiry - Ken & Babyz Creche" />
+                            <input type="text" name="_gotcha" style="display:none" />
+                        
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="parent-name" class="block text-sm font-semibold text-gray-700 mb-2">Parent's Name</label>
+                                    <!-- Added name and id -->
+                                    <input type="text" id="parent-name" name="Parent's Name" placeholder="Alan Smith" required class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-400 focus:outline-none transition-colors">
+                                </div>
+                                <div>
+                                    <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
+                                    <!-- Added name and id -->
+                                    <input type="tel" id="phone" name="Phone Number" placeholder="+234 800 000 0000" required class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-400 focus:outline-none transition-colors">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+                                <!-- Added name and id -->
+                                <input type="email" id="email" name="Email Address" placeholder="ASmith@example.com" required class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-400 focus:outline-none transition-colors">
+                            </div>
+                            <div>
+                                <label for="child-age" class="block text-sm font-semibold text-gray-700 mb-2">Child's Age</label>
+                                <!-- Added name and id -->
+                                <select id="child-age" name="Child's Age" required class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-400 focus:outline-none transition-colors">
+                                    <option value="" disabled selected>Please select...</option>
+                                    <option>0-12 months</option>
+                                    <option>12-18 months</option>
+                                    <option>18-24 months</option>
+                                    <option>2-3 years</option>
+                                    <option>3-5 years</option>
+                                    <option>5+ years</option>
+                                    <option>Multiple children</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="message" class="block text-sm font-semibold text-gray-700 mb-2">Message (Optional)</label>
+                                <!-- Added name and id -->
+                                <textarea id="message" name="Message" rows="4" placeholder="Tell us about your child or any questions you have..." class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-400 focus:outline-none transition-colors"></textarea>
+                            </div>
+                            <button type="submit" class="w-full py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2">
+                                <i data-lucide="send" class="w-5 h-5"></i> <!-- Changed icon to 'send' -->
+                                Send Message <!-- Changed button text -->
+                            </button>
+                        </form>
+                        <!-- FORM END -->
+                    </div>
+                
+                    <!-- The rest of your contact section (with address, etc.) remains exactly the same -->
+                     <div class="bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 p-8 lg:p-12 text-white flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold mb-8">Contact Information</h3>
+                            
+                            <div class="space-y-6">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                        <i data-lucide="map-pin" class="w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">Visit Us</p>
+                                        <p class="text-white/80">3 Iyase Street, Kosofe<br>Lagos, Nigeria</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                        <i data-lucide="phone" class="w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">Call Us</p>
+                                        <p class="text-white/80">+234 81 416 63737</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                        <i data-lucide="mail" class="w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">Email Us</p>
+                                        <p class="text-white/80">kennygcreche@gmail.com</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                        <i data-lucide="clock" class="w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">Opening Hours</p>
+                                        <p class="text-white/80">Mon - Fri: 6:30 AM - 6:00 PM<br>Saturday: 9:00 AM - 2:00 PM</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-12">
+                            <h4 class="font-semibold mb-4">Follow Us</h4>
+                            <div class="flex gap-4">
+                                <a href="https://web.facebook.com/profile.php?id=100057126683917" target="_blank" class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center hover:bg-white/30 transition-colors">
+                                    <i data-lucide="facebook" class="w-6 h-6"></i>
+                                </a>
+                                <a href="https://www.instagram.com/kennbabyz_creche/" target="_blank" class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center hover:bg-white/30 transition-colors">
+                                    <i data-lucide="instagram" class="w-6 h-6"></i>
+                                </a>
+                                <a href="mailto:kennygcreche@gmail.com" class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center hover:bg-white/30 transition-colors">
+                                    <i data-lucide="mail" class="w-6 h-6"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-12">
+                <div class="md:col-span-1">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-2xl flex items-center justify-center">
+                            <i data-lucide="heart" class="w-7 h-7 text-white"></i>
+                        </div>
+                        <span class="text-xl font-bold">Ken & Babyz</span>
+                    </div>
+                    <p class="text-gray-400 mb-6">Where every child's journey begins with love, care, and excellence in early education.</p>
+                    <div class="flex gap-4">
+                        <a href="https://web.facebook.com/profile.php?id=100057126683917" target="_blank" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-pink-500 transition-colors">
+                            <i data-lucide="facebook" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://www.instagram.com/kennbabyz_creche/" target="_blank" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-pink-500 transition-colors">
+                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                        </a>
+                        <a href="mailto:kennygcreche@gmail.com" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-pink-500 transition-colors">
+                            <i data-lucide="mail" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-6">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#home" class="text-gray-400 hover:text-pink-400 transition-colors">Home</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-pink-400 transition-colors">About Us</a></li>
+                        <li><a href="#programs" class="text-gray-400 hover:text-pink-400 transition-colors">Programs</a></li>
+                        <li><a href="#ceo" class="text-gray-400 hover:text-pink-400 transition-colors">Our CEO</a></li>
+                        <li><a href="#gallery" class="text-gray-400 hover:text-pink-400 transition-colors">Gallery</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-6">Programs</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#programs" class="text-gray-400 hover:text-pink-400 transition-colors">Infant Care (0-18mo)</a></li>
+                        <li><a href="#programs" class="text-gray-400 hover:text-pink-400 transition-colors">Toddler Time (18-36mo)</a></li>
+                        <li><a href="#programs" class="text-gray-400 hover:text-pink-400 transition-colors">Pre-K Prep (3-5yrs)</a></li>
+                        <li><a href="#programs" class="text-gray-400 hover:text-pink-400 transition-colors">Sleepovers</a></li>
+                        <li><a href="#programs" class="text-gray-400 hover:text-pink-400 transition-colors">After School Care</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center">
+                <p class="text-gray-400">© 2026 Ken and Babyz Creche. All rights reserved. Made with <i data-lucide="heart" class="w-4 h-4 inline text-pink-500"></i> for little ones.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                if(this.getAttribute('href') === '#') return;
+                
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close mobile menu if open
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+        
+        // Form submission handler
+        // Formspree Submission Handler
+        const contactForm = document.getElementById('contact-form');    
+        const submitBtn = contactForm.querySelector('button[type="submit"]');
+
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+    
+            // Show loading state
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Sending...';
+            submitBtn.disabled = true;
+            lucide.createIcons(); // Re-create icons to show spinner
+    
+            try {
+                const formData = new FormData(contactForm);
+                const response = await fetch(contactForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+        
+                if (response.ok) {
+                    // Success
+                    alert('✅ Thank you! Your enquiry has been sent. We will contact you shortly.');
+                    contactForm.reset(); // Clear form
+                } else {
+                    // Formspree error
+                    const error = await response.json();
+                    alert(`❌ Sorry, there was an error: ${error.error || 'Please try again.'}`);
+                }
+            } catch (error) {
+                // Network error
+                console.error('Error:', error);
+                alert('❌ Network error. Please check your connection.');
+            } finally {
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                lucide.createIcons();
+            }
+        });
+
+        
+        // Lightbox Gallery Functionality
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCaption = document.getElementById('lightbox-caption');
+        const lightboxClose = document.getElementById('lightbox-close');
+        const lightboxPrev = document.getElementById('lightbox-prev');
+        const lightboxNext = document.getElementById('lightbox-next');
+        
+        // Get all gallery images
+        const galleryImages = Array.from(document.querySelectorAll('.gallery-item img'));
+        let currentImageIndex = 0;
+        
+        // Function to open lightbox with specific image
+        function openLightbox(index) {
+            currentImageIndex = index;
+            const img = galleryImages[index];
+            lightboxImg.src = img.src;
+            lightboxCaption.textContent = img.getAttribute('data-caption') || '';
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+        
+        // Function to close lightbox
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
+        }
+        
+        // Function to show next image
+        function showNextImage() {
+            currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+            const img = galleryImages[currentImageIndex];
+            lightboxImg.src = img.src;
+            lightboxCaption.textContent = img.getAttribute('data-caption') || '';
+        }
+        
+        // Function to show previous image
+        function showPrevImage() {
+            currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+            const img = galleryImages[currentImageIndex];
+            lightboxImg.src = img.src;
+            lightboxCaption.textContent = img.getAttribute('data-caption') || '';
+        }
+        
+        // Add click event to all gallery images
+        galleryImages.forEach((img, index) => {
+            img.parentElement.addEventListener('click', () => openLightbox(index));
+        });
+        
+        // Lightbox controls
+        lightboxClose.addEventListener('click', closeLightbox);
+        lightboxNext.addEventListener('click', showNextImage);
+        lightboxPrev.addEventListener('click', showPrevImage);
+        
+        // Close lightbox when clicking on background
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+        
+        // Keyboard navigation for lightbox
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('active')) return;
+            
+            switch(e.key) {
+                case 'Escape':
+                    closeLightbox();
+                    break;
+                case 'ArrowRight':
+                    showNextImage();
+                    break;
+                case 'ArrowLeft':
+                    showPrevImage();
+                    break;
+            }
+        });
+        
+        // Swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        lightbox.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        lightbox.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            
+            if (touchEndX < touchStartX - swipeThreshold) {
+                // Swipe left - next image
+                showNextImage();
+            } else if (touchEndX > touchStartX + swipeThreshold) {
+                // Swipe right - previous image
+                showPrevImage();
+            }
+        }
+        
+        // Prevent right-click menu on gallery images (optional)
+        galleryImages.forEach(img => {
+            img.addEventListener('contextmenu', (e) => e.preventDefault());
+        });
+    </script>
+</body>
+</html>
